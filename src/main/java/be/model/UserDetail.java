@@ -15,6 +15,7 @@ public class UserDetail {
         this.account = account;
     }
 
+
     public String getFirstName() {
         return firstName;
     }

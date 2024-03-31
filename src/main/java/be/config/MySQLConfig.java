@@ -6,8 +6,6 @@ import java.sql.SQLException;
 
 public class MySQLConfig {
     public static Connection getConnection() {
-
-
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/accountdb",
                     "chef",

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AccountRepository {
-    public void addAccount(Account account) {
+    public boolean addAccount(Account account) {
         String query = String.format("INSERT INTO account (username, password) VALUES ('%s', '%s')",
                 account.getUsername(), account.getPassword());
 
@@ -18,8 +18,9 @@ public class AccountRepository {
             statement.executeUpdate(query);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            return false;
         }
+        return true;
 
     }
 
@@ -70,7 +71,12 @@ public class AccountRepository {
         return accounts;
     }
 
-    public void deleteAccount(String username) {
+    public int deleteAccount(String username) {
+
+        if (getAccount(username)==null){
+            return 0;
+        }
+
         String query = "DELETE FROM account WHERE username = ?";
 
         try (Connection connection = MySQLConfig.getConnection()) {
@@ -81,24 +87,8 @@ public class AccountRepository {
             statement.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            return -1;
         }
+        return 1;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

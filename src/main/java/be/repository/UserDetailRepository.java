@@ -12,7 +12,7 @@ import java.util.List;
 public class UserDetailRepository {
 
     //CREATE: INSERT
-    public void addUserDetail(UserDetail userDetail) {
+    public boolean addUserDetail(UserDetail userDetail) {
         String query = "INSERT INTO userdetail (firstName, lastName, email, accountUsername)" +
                 "VALUES (?, ?, ?, ?)";
 
@@ -27,15 +27,17 @@ public class UserDetailRepository {
             statement.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
 
 
     //READ: SELECT ONE BY ID
     public UserDetail getUserDetail(Account account) {
-        String query = "SELECT * FROM userdetail WHERE accountUsername="+account.getUsername();
+        if (account==null) return null;
+        String query = "SELECT * FROM userdetail WHERE accountUsername='"+account.getUsername()+"'";
 
         try (Connection connection = MySQLConfig.getConnection()) {
 
@@ -47,7 +49,7 @@ public class UserDetailRepository {
                         resultSet.getString("firstname"),
                         resultSet.getString("lastName"),
                         resultSet.getString("email"),
-                        (Account) resultSet.getObject("accountUsername")
+                        account
                 );
             }
 
@@ -76,7 +78,7 @@ public class UserDetailRepository {
                         resultSet.getString("firstname"),
                         resultSet.getString("lastName"),
                         resultSet.getString("email"),
-                        (Account) resultSet.getObject("accountUsername"))
+                        new Account(resultSet.getString("accountUsername"),"hidden"))
                 );
             }
 
@@ -116,21 +118,23 @@ public class UserDetailRepository {
 
 
     //DELETE: DELETE
-    public boolean deleteUserDetail(Account account) {
-        String query = "DELETE FROM userdetail WHERE accountUsername"+account.getUsername();
+    public int deleteUserDetail(Account account) {
+
+        if (getUserDetail(account)==null){
+            return 0;
+        }
+
+        String query = "DELETE FROM userdetail WHERE accountUsername='"+account.getUsername()+"'";
 
         try (Connection connection = MySQLConfig.getConnection()) {
 
             Statement statement = connection.createStatement();
-            return statement.execute(query);
+            statement.execute(query);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            return -1;
         }
-
-        return false;
+        return 1;
     }
-
-
 
 }

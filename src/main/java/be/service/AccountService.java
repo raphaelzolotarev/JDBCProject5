@@ -8,13 +8,13 @@ import java.util.List;
 public class AccountService {
     private AccountRepository accountRepository = new AccountRepository();
 
-    public void addAccount(Account account) {
-        accountRepository.addAccount(account);
+    public String addAccount(Account account) {
+        return accountRepository.addAccount(account) ? "New account added!" : "You cannot add an account with that name because it already exists, choose another name";
     }
 
-    public void addAccount(String username, String password) {
+    public String addAccount(String username, String password) {
         Account account = new Account(username, password);
-        this.addAccount(account);
+        return this.addAccount(account);
     }
 
     public Account getAccount(String username) {
@@ -25,7 +25,15 @@ public class AccountService {
         return accountRepository.getAllAccounts();
     }
 
-    public void deleteAccount(String username) {
-        accountRepository.deleteAccount(username);
+    public String deleteAccount(String username) {
+        int value = accountRepository.deleteAccount(username);
+        if (value == 1){
+            return "User deleted!";
+        }
+        else if (value == -1){
+            return "Sorry an error occured, cannot proceed!";
+        }
+        return "This user doesnt exists!";
+
     }
 }
